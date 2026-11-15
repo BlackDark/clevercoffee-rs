@@ -724,6 +724,23 @@ impl Machine {
         }
     }
 
+    /// Toggle left on is still the wish: the edge is one tick, the level is not.
+    fn steam_toggle_held(&self) -> bool {
+        self.switches
+            .steam
+            .as_ref()
+            .is_some_and(|sw| sw.kind() == SwitchType::Toggle && sw.is_pressed())
+    }
+
+    /// Shot over. A held steam toggle beats the result screen and brew heating.
+    fn after_shot(&self, otherwise: State) -> State {
+        if self.steam_toggle_held() {
+            State::Steam
+        } else {
+            otherwise
+        }
+    }
+
     fn on_power_edge(&mut self, pressed: bool, kind: SwitchType, cfg: &mut Config, ev: &mut Events) {
         let now = self.now_ms;
         let on = match kind {
@@ -889,7 +906,7 @@ impl Machine {
             }
             State::BrewPreinfusion => {
                 if r.brew_stop {
-                    Some(pid_state)
+                    Some(self.after_shot(pid_state))
                 } else if !automatic || !cfg.brew_pre_infusion_enabled {
                     Some(State::BrewRunning)
                 } else if elapsed >= (cfg.brew_pre_infusion_time * 1000.0) as u64 {
@@ -904,7 +921,7 @@ impl Machine {
             }
             State::BrewPreinfusionPause => {
                 if r.brew_stop {
-                    Some(pid_state)
+                    Some(self.after_shot(pid_state))
                 } else if !automatic || elapsed >= (cfg.brew_pre_infusion_pause * 1000.0) as u64 {
                     Some(State::BrewRunning)
                 } else {
@@ -923,11 +940,13 @@ impl Machine {
                     && !self.scale.is_faulty(self.now_ms)
                     && target_g > 0.0
                     && self.scale.brew_weight() >= target_g;
-                (r.brew_stop || by_time || by_weight).then_some(State::BrewFinished)
+                (r.brew_stop || by_time || by_weight).then_some(self.after_shot(State::BrewFinished))
             }
             State::BrewFinished => {
                 if r.brew_start {
                     Some(State::BrewPreinfusion)
+                } else if r.steam_start || self.steam_toggle_held() {
+                    Some(State::Steam)
                 } else {
                     (elapsed >= FINISHED_DISPLAY_MS).then_some(pid_state)
                 }
@@ -1042,15 +1061,9 @@ impl Machine {
                     self.brew_started_ms = Some(self.now_ms);
                 }
             }
-            State::BrewFinished => {
-                self.brew_started_ms = None;
-                let weight_counts =
-                    cfg.hardware_sensors_scale_enabled && self.scale.brew_weight() >= MIN_COUNTED_SHOT_G;
-                if self.brew_time_ms >= MIN_COUNTED_SHOT_MS || weight_counts {
-                    self.shots_since_backflush = self.shots_since_backflush.saturating_add(1);
-                    let _ = ev.push(Event::ShotCounterChanged);
-                }
-            }
+            State::BrewFinished => self.count_finished_shot(cfg, ev),
+            // Replaces BrewFinished. A stop during preinfusion never counted.
+            State::Steam if from == State::BrewRunning => self.count_finished_shot(cfg, ev),
             State::ManualFlush => self.brew_time_ms = 0.0,
             State::BackflushFilling if from == State::BackflushFlushing => self.backflush_cycle += 1,
             State::BackflushIdle => self.backflush_cycle = 1,
@@ -1076,6 +1089,17 @@ impl Machine {
         self.state = to;
         self.state_since_ms = self.now_ms;
         let _ = ev.push(Event::StateChanged { from, to });
+    }
+
+    /// Same rule as entering `BrewFinished`: long enough, or heavy enough, counts.
+    fn count_finished_shot(&mut self, cfg: &Config, ev: &mut Events) {
+        self.brew_started_ms = None;
+        let weight_counts =
+            cfg.hardware_sensors_scale_enabled && self.scale.brew_weight() >= MIN_COUNTED_SHOT_G;
+        if self.brew_time_ms >= MIN_COUNTED_SHOT_MS || weight_counts {
+            self.shots_since_backflush = self.shots_since_backflush.saturating_add(1);
+            let _ = ev.push(Event::ShotCounterChanged);
+        }
     }
 
     // --- temperature control ------------------------------------------------------

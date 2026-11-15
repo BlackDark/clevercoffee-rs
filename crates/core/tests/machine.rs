@@ -840,3 +840,96 @@ fn fix_pid_setting_changed_in_standby_applies_after_waking() {
     s.run(100);
     assert_eq!(s.state(), State::PidDisabled);
 }
+
+#[test]
+fn steam_on_during_brew_result_stays_in_steam() {
+    let mut s = Sim::ready();
+    s.brew(true);
+    s.run(1_000);
+    s.brew(false);
+    assert_eq!(s.state(), State::BrewFinished);
+    s.inp.steam_switch = true;
+    s.run(100);
+    assert_eq!(s.state(), State::Steam);
+    assert_eq!(s.m.status(&s.cfg).setpoint, 120.0);
+    assert!(s.out().steam_led);
+    s.run(FINISHED_DISPLAY_MS + 500);
+    assert_eq!(
+        s.state(),
+        State::Steam,
+        "result timeout must not drop a held toggle"
+    );
+    s.inp.steam_switch = false;
+    s.run(100);
+    assert_eq!(s.state(), State::PidNormal);
+
+    let mut s = Sim::ready();
+    s.brew(true);
+    s.brew(false);
+    assert_eq!(s.cmd(Command::ToggleSteam), Reply::Steam(true));
+    s.run(50);
+    assert_eq!(s.state(), State::Steam);
+    s.run(FINISHED_DISPLAY_MS + 500);
+    assert_eq!(s.state(), State::Steam);
+}
+
+#[test]
+fn steam_toggle_held_through_a_shot_enters_steam_when_the_shot_ends() {
+    let mut s = Sim::ready();
+    s.brew(true);
+    assert_eq!(s.state(), State::BrewRunning);
+    s.inp.steam_switch = true;
+    s.run(500);
+    assert_eq!(s.state(), State::BrewRunning, "steam must not abort the shot");
+    s.run(6_000);
+    s.brew(false);
+    assert_eq!(s.state(), State::Steam);
+    assert_eq!(s.shots(), 1);
+    s.run(FINISHED_DISPLAY_MS + 500);
+    assert_eq!(s.state(), State::Steam);
+}
+
+#[test]
+fn momentary_steam_during_brew_result_follows_the_press() {
+    let mut s = Sim::ready();
+    s.cfg.hardware_switches_steam_type = SwitchType::Momentary;
+    s.m = Machine::new(&s.cfg, 0, s.inp.now_ms);
+    s.temp(93.0);
+    s.run(100);
+    s.brew(true);
+    s.run(1_000);
+    s.inp.steam_switch = true;
+    s.run(100);
+    assert_eq!(s.state(), State::BrewRunning);
+    s.brew(false);
+    assert_eq!(s.state(), State::BrewFinished);
+    s.run(200);
+    assert_eq!(
+        s.state(),
+        State::BrewFinished,
+        "a held momentary pin is not steam"
+    );
+    s.inp.steam_switch = false;
+    s.run(50);
+    s.inp.steam_switch = true;
+    s.run(100);
+    assert_eq!(s.state(), State::Steam);
+    s.run(FINISHED_DISPLAY_MS + 500);
+    assert_eq!(s.state(), State::Steam);
+}
+
+#[test]
+fn steam_held_through_preinfusion_does_not_count_a_shot() {
+    let mut s = Sim::ready();
+    s.cfg.brew_mode = BrewMode::Automatic;
+    s.cfg.brew_pre_infusion_enabled = true;
+    s.cfg.brew_pre_infusion_time = 8.0;
+    s.brew(true);
+    assert_eq!(s.state(), State::BrewPreinfusion);
+    s.inp.steam_switch = true;
+    s.run(6_000);
+    assert_eq!(s.state(), State::BrewPreinfusion);
+    s.brew(false);
+    assert_eq!(s.state(), State::Steam);
+    assert_eq!(s.shots(), 0);
+}

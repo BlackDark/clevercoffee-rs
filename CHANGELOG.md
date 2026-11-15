@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/BlackDark/clevercoffee-rs/compare/v2.3.0...v2.3.1) (2026-11-15)
+
+
+### Bug Fixes
+
+* **core:** stay in steam when the toggle is still on after a shot ([#177](https://github.com/BlackDark/clevercoffee-rs/issues/177)) ([dcfe0f3](https://github.com/BlackDark/clevercoffee-rs/commit/dcfe0f31c61300187635a37278667d9bf3eb03e5))
+
 ## [2.3.0](https://github.com/BlackDark/clevercoffee-rs/compare/v2.2.0...v2.3.0) (2026-11-12)
 
 

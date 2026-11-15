@@ -428,7 +428,8 @@ impl Screens<'_, '_> {
 
     fn fullscreen_brew(&self, c: &mut Canvas<'_>) -> bool {
         let st = self.st();
-        if !self.cfg().display_fullscreen_brew_timer || !st.brew_timer_visible {
+        // Steam covers the result: a held toggle must not keep the brew cup up.
+        if st.state == State::Steam || !self.cfg().display_fullscreen_brew_timer || !st.brew_timer_visible {
             return false;
         }
         let scale = self.cfg().hardware_sensors_scale_enabled;

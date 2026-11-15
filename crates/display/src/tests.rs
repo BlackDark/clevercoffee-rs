@@ -72,6 +72,43 @@ fn every_screen_renders_inside_the_panel_with_known_glyphs() {
 }
 
 #[test]
+fn steam_shows_over_the_post_brew_timer() {
+    let cfg = Config {
+        display_fullscreen_brew_timer: true,
+        ..Config::default()
+    };
+    let mut covered_st = status(State::Steam);
+    covered_st.post_brew = true;
+    covered_st.brew_timer_visible = true;
+    let plain_st = status(State::Steam);
+    let mut covered = Frame::default();
+    let mut plain = Frame::default();
+    render(
+        &mut covered,
+        &View {
+            status: &covered_st,
+            cfg: &cfg,
+            net: net(),
+            uptime_ms: 0,
+            ota: None,
+            banner: None,
+        },
+    );
+    render(
+        &mut plain,
+        &View {
+            status: &plain_st,
+            cfg: &cfg,
+            net: net(),
+            uptime_ms: 0,
+            ota: None,
+            banner: None,
+        },
+    );
+    assert_eq!(covered.bytes, plain.bytes);
+}
+
+#[test]
 fn standby_long_enough_turns_the_panel_off() {
     let mut st = status(State::Standby);
     st.display_off = true;

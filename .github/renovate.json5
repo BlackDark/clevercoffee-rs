@@ -63,15 +63,7 @@
       // together and pinned exactly (`=x.y.z`); mixed versions do not link.
       description: "esp-rs stack moves together, reviewed by hand",
       matchManagers: ["cargo"],
-      matchPackageNames: [
-        "/^esp-/",
-        "/^embassy-/",
-        "trouble-host",
-        "bt-hci",
-        "/^edge-/",
-        "picoserve",
-        "rust-mqtt",
-      ],
+      matchPackageNames: ["/^esp-/", "/^embassy-/", "trouble-host", "bt-hci", "/^edge-/", "picoserve", "rust-mqtt"],
       groupName: "esp-rs stack",
       groupSlug: "esp-rs",
       automerge: false,
@@ -103,17 +95,8 @@
       managerFilePatterns: ["/(^|/)justfile$/"],
       // Comment line, then `name := "version"`. Optional: versioning=…, extractVersion=….
       matchStrings: [
-        '# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: versioning=(?<versioning>\\S+))?(?: extractVersion=(?<extractVersion>\\S+))?\\s*\\n\\S+\\s*:=\\s*"(?<currentValue>[^"]+)"',
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?: versioning=(?<versioning>\\S+))?(?: extractVersion=(?<extractVersion>\\S+))?\\s*\\n\\S+\\s*:=\\s*\"(?<currentValue>[^\"]+)\"",
       ],
-    },
-    {
-      customType: "regex",
-      managerFilePatterns: ["/\\.github/workflows/.*\\.ya?ml$/"],
-      matchStrings: [
-        '# actionlint-local-archive\\s+ACTIONLINT_VERSION: "(?<currentValue>[^"]+)"\\s+ACTIONLINT_SHA256: "(?<currentDigest>[a-f0-9]{64})"',
-      ],
-      depNameTemplate: "rhysd/actionlint",
-      datasourceTemplate: "github-release-attachments",
     },
   ],
 }

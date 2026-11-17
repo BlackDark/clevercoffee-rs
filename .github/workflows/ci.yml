@@ -24,9 +24,6 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  # actionlint-local-archive
-  ACTIONLINT_VERSION: "v1.7.12"
-  ACTIONLINT_SHA256: "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
   # renovate: datasource=npm depName=renovate
   RENOVATE_VERSION: "44.221.1"
 
@@ -71,7 +68,7 @@ jobs:
             echo "host=$host"
             echo "ui=$ui"
             echo "firmware=$firmware"
-            echo "lint=$(has '^(\.github/|renovate\.json5?$)')"
+            echo "lint=$(has '^(\.github/|renovate\.json5?$|\.?mise\.(toml|lock)$)')"
           } >> "$GITHUB_OUTPUT"
 
   host:
@@ -194,12 +191,11 @@ jobs:
         with:
           ref: ${{ needs.changes.outputs.sha }}
           persist-credentials: false
-      - run: |
-          archive="actionlint_${ACTIONLINT_VERSION#v}_linux_amd64.tar.gz"
-          curl -fsSLo "$archive" "https://github.com/rhysd/actionlint/releases/download/${ACTIONLINT_VERSION}/${archive}"
-          echo "${ACTIONLINT_SHA256}  ${archive}" | sha256sum --check
-          tar -xzf "$archive" actionlint
-          ./actionlint -color
+      - uses: jdx/mise-action@236a21c3b91f5db6d4e174b348674a0f0caac06d # v5.2.9
+        with:
+          install_args: actionlint
+          cache_save: ${{ github.workflow == 'CI' && github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+      - run: mise exec -- actionlint -color
 
   renovate-config:
     needs: changes

@@ -1,62 +1,18 @@
-// From BlackDark/agent-presets templates/renovate.template.json5 (Go rules removed, esp-rs rules added).
-// Repo settings: enable "Allow auto-merge" and require the CI status checks on main,
-// otherwise platform automerge lands PRs before CI ran.
+// Shared defaults live in BlackDark/renovate-base. Keep repo-specific rules here.
+// Repo settings: enable "Allow auto-merge" and require the CI `check` on main.
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
-    "config:best-practices", // recommended + digest pins for Docker images and GitHub Actions
-    "security:minimumReleaseAgeNpm", // npm releases wait 3 days (unpublish window, hijacked releases)
-    "customManagers:githubActionsVersions", // `# renovate: datasource=… depName=…` comments in workflows
-    ":pinVersions", // exact versions in package.json; libraries: remove, ranges belong there
-    ":prConcurrentLimitNone",
-    ":prHourlyLimitNone",
+    "github>blackdark/renovate-base//default.json5",
+    "github>blackdark/renovate-base//rust.json5",
+    ":pinVersions",
   ],
-  labels: ["dependencies"],
-  semanticCommits: "enabled",
-  timezone: "Europe/Berlin",
-
-  // --- Schedule: pick one ---
-  // Weekly: branches are created/updated Monday early morning only.
-  schedule: ["before 4am on monday"],
-  // Always: delete `schedule` above (or use ["at any time"]).
-  // Monthly: extends "schedule:monthly".
-
-  // With a schedule, Renovate's own automerge only runs inside the window too, so a PR that turns
-  // green later would wait a week. Platform automerge (GitHub native) merges it as soon as CI passes.
   updateNotScheduled: false,
   platformAutomerge: true,
-
-  separateMajorMinor: true,
   separateMultipleMajor: true,
-
-  lockFileMaintenance: {
-    enabled: true,
-    automerge: true,
-  },
 
   // Later rules override earlier ones: general first, specific after.
   packageRules: [
-    {
-      description: "Group and automerge patch, pin and digest updates",
-      matchUpdateTypes: ["patch", "pin", "pinDigest", "digest"],
-      groupName: "all patch/pin/digest updates",
-      groupSlug: "all-patch-pin-digest",
-      automerge: true,
-    },
-    {
-      description: "Group and automerge minor updates",
-      matchUpdateTypes: ["minor"],
-      groupName: "all minor updates",
-      groupSlug: "all-minor",
-      automerge: true,
-    },
-    {
-      description: "0.x: minor may break, review by hand",
-      matchUpdateTypes: ["minor"],
-      matchCurrentVersion: "/^v?0\\./",
-      groupName: null,
-      automerge: false,
-    },
     {
       description: "Node runtime (mise + node images) in one PR",
       matchManagers: ["mise", "dockerfile", "docker-compose", "nodenv", "nvm"],
@@ -132,15 +88,6 @@
   ],
 
   customManagers: [
-    {
-      customType: "regex",
-      description: "Rust toolchain channel in rust-toolchain.toml",
-      managerFilePatterns: ["/(^|/)rust-toolchain\\.toml$/"],
-      matchStrings: ["channel\\s*=\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
-      depNameTemplate: "rust",
-      packageNameTemplate: "rust-lang/rust",
-      datasourceTemplate: "github-releases",
-    },
     {
       customType: "regex",
       description: "Versions pinned under a `# renovate: datasource=… depName=…` comment (justfile)",

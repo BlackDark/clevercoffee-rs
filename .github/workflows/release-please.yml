@@ -71,7 +71,7 @@ jobs:
   publish:
     needs: release-please
     if: needs.release-please.outputs.created == 'true'
-    uses: $/.github/workflows/release.yml
+    uses: ./.github/workflows/release.yml # zizmor: ignore[self-repository]
     permissions:
       contents: write
       actions: read

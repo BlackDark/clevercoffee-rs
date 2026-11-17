@@ -53,7 +53,7 @@ jobs:
             { echo "host=true"; echo "ui=true"; echo "firmware=true"; echo "lint=true"; } >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          changed=$(git diff --no-renames --name-only HEAD^1 HEAD)
+          changed=$(git diff --no-renames --name-only -z HEAD^1 HEAD | xargs -0 -n1 printf '%s\n')
           has() { grep -qE "$1" <<< "$changed" && echo true || echo false; }
           ci=$(has '^\.github/workflows/ci\.yml$')
           host=$(has '^(Cargo\.(toml|lock)$|crates/|tools/|firmware/vendor/|rust-toolchain\.toml$|mise\.toml$|justfile$)')
@@ -195,7 +195,7 @@ jobs:
           persist-credentials: false
       - run: |
           bash <(curl -fsSL "https://raw.githubusercontent.com/rhysd/actionlint/v${ACTIONLINT_VERSION}/scripts/download-actionlint.bash") "$ACTIONLINT_VERSION"
-          ./actionlint -color .github/workflows/*.yml
+          ./actionlint -color
 
   renovate-config:
     needs: changes
@@ -207,6 +207,10 @@ jobs:
         with:
           ref: ${{ needs.changes.outputs.sha }}
           persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.13.1
+          package-manager-cache: false
       - run: npx --yes --package "renovate@${RENOVATE_VERSION}" -- renovate-config-validator --strict
 
   zizmor:

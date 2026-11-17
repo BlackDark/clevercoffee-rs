@@ -51,25 +51,31 @@ jobs:
             { echo "host=true"; echo "ui=true"; echo "firmware=true"; echo "lint=true"; } >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          changed=$(git diff --no-renames --name-only -z HEAD^1 HEAD | xargs -0 -n1 printf '%s\n')
-          has() { grep -qE "$1" <<< "$changed" && echo true || echo false; }
-          ci=$(has '^\.github/workflows/ci\.yml$')
-          host=$(has '^(Cargo\.(toml|lock)$|crates/|tools/|firmware/vendor/|rust-toolchain\.toml$|\.?rustfmt\.toml$|\.cargo/|mise\.toml$|justfile$)')
-          ui=$(has '^(ui/|mise\.toml$|justfile$)')
-          firmware=$(has '^(Cargo\.(toml|lock)$|crates/|firmware/|ui/|rust-toolchain\.toml$|\.?rustfmt\.toml$|\.cargo/|mise\.toml$|justfile$)')
-          if [ "$ci" = true ]; then
-            host=true
-            ui=true
-            firmware=true
-          fi
-          # Firmware consumes the UI artifact, even when only firmware files changed.
+          git diff --no-renames --name-only -z HEAD^1 HEAD > "$RUNNER_TEMP/changed-paths"
+          host=false
+          ui=false
+          firmware=false
+          lint=false
+          while IFS= read -r -d '' path; do
+            case "$path" in
+              .github/workflows/ci.yml) host=true; ui=true; firmware=true ;;
+            esac
+            case "$path" in
+              Cargo.toml | Cargo.lock | crates/* | rust-toolchain.toml | rustfmt.toml | .rustfmt.toml | .cargo/* | mise.toml | justfile | .config/mise* | mise/* | .mise/* | mise.lock) host=true; firmware=true ;;
+              tools/*) host=true ;;
+              firmware/vendor/*) host=true; firmware=true ;;
+              firmware/*) firmware=true ;;
+            esac
+            case "$path" in
+              ui/* | mise.toml | justfile | .config/mise* | mise/* | .mise/* | mise.lock) ui=true; firmware=true ;;
+            esac
+            case "$path" in
+              .github/* | renovate.json | renovate.json5 | mise.toml | .mise.toml | mise.lock | .mise.lock | .config/mise* | mise/* | .mise/*) lint=true ;;
+            esac
+          done < "$RUNNER_TEMP/changed-paths"
+          # Firmware consumes the UI artifact.
           if [ "$firmware" = true ]; then ui=true; fi
-          {
-            echo "host=$host"
-            echo "ui=$ui"
-            echo "firmware=$firmware"
-            echo "lint=$(has '^(\.github/|renovate\.json5?$|\.?mise\.(toml|lock)$)')"
-          } >> "$GITHUB_OUTPUT"
+          { echo "host=$host"; echo "ui=$ui"; echo "firmware=$firmware"; echo "lint=$lint"; } >> "$GITHUB_OUTPUT"
 
   host:
     needs: changes

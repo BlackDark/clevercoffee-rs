@@ -1,6 +1,7 @@
 # Repo-local tools. Rust is not here: rust-toolchain.toml + rustup; the Xtensa
 # toolchain for firmware/ comes from espup (`just setup`, ADR 0002).
 [tools]
+actionlint = "1.7.12"
 just = "1.59.0"
 node = "26.13.1"
 pnpm = "12.21.0"

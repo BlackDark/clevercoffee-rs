@@ -54,9 +54,9 @@ jobs:
           changed=$(git diff --no-renames --name-only -z HEAD^1 HEAD | xargs -0 -n1 printf '%s\n')
           has() { grep -qE "$1" <<< "$changed" && echo true || echo false; }
           ci=$(has '^\.github/workflows/ci\.yml$')
-          host=$(has '^(Cargo\.(toml|lock)$|crates/|tools/|firmware/vendor/|rust-toolchain\.toml$|mise\.toml$|justfile$)')
+          host=$(has '^(Cargo\.(toml|lock)$|crates/|tools/|firmware/vendor/|rust-toolchain\.toml$|\.?rustfmt\.toml$|\.cargo/|mise\.toml$|justfile$)')
           ui=$(has '^(ui/|mise\.toml$|justfile$)')
-          firmware=$(has '^(Cargo\.(toml|lock)$|crates/|firmware/|ui/|rust-toolchain\.toml$|mise\.toml$|justfile$)')
+          firmware=$(has '^(Cargo\.(toml|lock)$|crates/|firmware/|ui/|rust-toolchain\.toml$|\.?rustfmt\.toml$|\.cargo/|mise\.toml$|justfile$)')
           if [ "$ci" = true ]; then
             host=true
             ui=true

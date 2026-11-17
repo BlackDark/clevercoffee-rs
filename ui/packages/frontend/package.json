@@ -23,10 +23,10 @@
     "check:types:ts6": "svelte-check --tsconfig ./tsconfig.app.json --fail-on-warnings"
   },
   "dependencies": {
-    "@lucide/svelte": "1.69.0",
+    "@lucide/svelte": "1.73.0",
     "@tailwindcss/vite": "4.3.5",
-    "@tanstack/svelte-query": "6.3.11",
-    "bits-ui": "2.20.6",
+    "@tanstack/svelte-query": "6.4.1",
+    "bits-ui": "2.21.0",
     "cn": "0.5.2",
     "svelte": "5.57.3",
     "svelte-sonner": "1.2.3",
@@ -38,8 +38,8 @@
   },
   "devDependencies": {
     "@inlang/paraglide-js": "3.2.2",
-    "@inlang/plugin-m-function-matcher": "2.3.0",
-    "@inlang/plugin-message-format": "4.5.0",
+    "@inlang/plugin-m-function-matcher": "2.4.3",
+    "@inlang/plugin-message-format": "4.6.0",
     "@playwright/test": "1.65.0",
     "@sveltejs/vite-plugin-svelte": "7.3.1",
     "@testing-library/jest-dom": "7.0.1",
@@ -47,7 +47,7 @@
     "@types/node": "26.6.6",
     "@typescript/native": "npm:typescript@7.0.2",
     "jsdom": "31.0.0",
-    "prettier": "3.9.10",
+    "prettier": "3.10.1",
     "prettier-plugin-svelte": "4.1.1",
     "rollup-plugin-gzip": "4.2.1",
     "shadcn-svelte": "1.8.1",

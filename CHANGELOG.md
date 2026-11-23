@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.2](https://github.com/BlackDark/clevercoffee-rs/compare/v2.3.1...v2.3.2) (2026-11-23)
+
+
+### Bug Fixes
+
+* **deps:** update all minor updates ([#181](https://github.com/BlackDark/clevercoffee-rs/issues/181)) ([5829c00](https://github.com/BlackDark/clevercoffee-rs/commit/5829c000a0412fccc23c80d7cd5ee7097e03195f))
+* **deps:** update all patch/pin/digest updates ([#180](https://github.com/BlackDark/clevercoffee-rs/issues/180)) ([810b06d](https://github.com/BlackDark/clevercoffee-rs/commit/810b06d2f95ed1614ffc5c41458a088ded33b8b1))
+* **deps:** update rust crate picoserve to v0.21.0 ([#182](https://github.com/BlackDark/clevercoffee-rs/issues/182)) ([9537b88](https://github.com/BlackDark/clevercoffee-rs/commit/9537b88b3f436300103d119cd96daba795c73ba9))
+
+
+### Refactoring
+
+* **deps:** update dependencies (non-major) ([#193](https://github.com/BlackDark/clevercoffee-rs/issues/193)) ([3762f05](https://github.com/BlackDark/clevercoffee-rs/commit/3762f05d7e78ce5fd21909703a2bba8b992602a6))
+
 ## [2.3.1](https://github.com/BlackDark/clevercoffee-rs/compare/v2.3.0...v2.3.1) (2026-11-15)
 
 

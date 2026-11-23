@@ -120,7 +120,7 @@ dependencies = [
  "embedded-io 0.7.1",
  "embedded-io-async 0.7.0",
  "futures-intrusive",
- "heapless 0.9.3",
+ "heapless 0.8.0",
 ]
 
 [[package]]
@@ -182,7 +182,7 @@ name = "cc-api"
 version = "2.3.1"
 dependencies = [
  "cc-core",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "libm",
 ]
 
@@ -195,7 +195,7 @@ name = "cc-core"
 version = "2.3.1"
 dependencies = [
  "cc-pid",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "libm",
  "serde",
 ]
@@ -206,7 +206,7 @@ version = "2.3.1"
 dependencies = [
  "cc-core",
  "embedded-graphics",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "libm",
  "u8g2-fonts",
 ]
@@ -224,7 +224,7 @@ version = "2.3.1"
 dependencies = [
  "cc-api",
  "cc-core",
- "heapless 0.9.3",
+ "heapless 0.9.4",
 ]
 
 [[package]]
@@ -255,7 +255,7 @@ version = "2.3.1"
 dependencies = [
  "cc-api",
  "cc-core",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "picoserve",
 ]
 
@@ -304,7 +304,7 @@ dependencies = [
  "esp-radio",
  "esp-rtos",
  "esp-storage",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "log",
  "picoserve",
  "postcard",
@@ -597,7 +597,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5b68712c02bff2348323c1441ab2e8528e32af4f8f9edf29356356290328c8e6"
 dependencies = [
  "domain-macros",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "jiff",
  "octseq",
 ]
@@ -633,7 +633,7 @@ dependencies = [
  "edge-raw",
  "embassy-futures",
  "embassy-time",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "num_enum",
  "rand_core 0.10.1",
 ]
@@ -649,7 +649,7 @@ dependencies = [
  "embassy-futures",
  "embassy-sync 0.8.0",
  "embassy-time",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "rand_core 0.10.1",
 ]
 
@@ -755,7 +755,7 @@ dependencies = [
  "embassy-time",
  "embedded-io-async 0.7.0",
  "embedded-nal-async",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "log",
  "managed",
  "smoltcp",
@@ -806,7 +806,7 @@ dependencies = [
  "embedded-io-async 0.7.0",
  "futures-core",
  "futures-sink",
- "heapless 0.9.3",
+ "heapless 0.9.4",
 ]
 
 [[package]]
@@ -842,7 +842,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "168297bf80aaf114b3c9ad589bf38b01b3009b9af7f97cd18086c5bbf96f5693"
 dependencies = [
  "embassy-executor-timer-queue",
- "heapless 0.9.3",
+ "heapless 0.9.4",
 ]
 
 [[package]]
@@ -1019,7 +1019,7 @@ dependencies = [
  "esp-config",
  "esp-metadata-generated",
  "esp-println",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "riscv",
  "semihosting",
  "xtensa-lx",
@@ -1205,7 +1205,7 @@ dependencies = [
  "esp-wifi-sys-esp32s3",
  "esp-wifi-sys-esp32s31",
  "esp32 0.42.0",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "instability",
  "log",
  "num-derive",
@@ -1669,9 +1669,9 @@ dependencies = [
 
 [[package]]
 name = "heapless"
-version = "0.9.3"
+version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25ba4bd83f9415b58b4ed8dc5714c76e626a105be4646c02630ad730ad3b5aa4"
+checksum = "411fdef4df93751117bd9ef8caa0e7f99c65dafec5bd84313eb8e2fdd75e32f2"
 dependencies = [
  "hash32 0.3.1",
  "serde_core",
@@ -1939,7 +1939,7 @@ version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "182eab3e1cd9cdc0ecf1ce3342d9844f3dc7d098f0694569bfdf327b612d69fd"
 dependencies = [
- "heapless 0.9.3",
+ "heapless 0.9.4",
 ]
 
 [[package]]
@@ -1966,7 +1966,7 @@ dependencies = [
  "embedded-io-async 0.7.0",
  "futures-util",
  "heapless 0.8.0",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "picoserve_derive",
  "pin-project",
  "serde",
@@ -2198,7 +2198,7 @@ checksum = "9345427199453b4961a0a275edbca86d0472942d731c6d79a23517c1db8f7ca3"
 dependencies = [
  "const_fn",
  "embedded-io-async 0.7.0",
- "heapless 0.9.3",
+ "heapless 0.9.4",
 ]
 
 [[package]]
@@ -2265,7 +2265,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1550e4d0c7a6a54e2d7884309dc6bfe206d2d8884cb5498177fd936cb233616d"
 dependencies = [
  "embedded-storage-async",
- "heapless 0.9.3",
+ "heapless 0.9.4",
 ]
 
 [[package]]
@@ -2367,7 +2367,7 @@ dependencies = [
  "bitflags",
  "byteorder",
  "cfg-if",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "managed",
 ]
 
@@ -2611,7 +2611,7 @@ dependencies = [
  "embassy-time",
  "embedded-io 0.7.1",
  "futures",
- "heapless 0.9.3",
+ "heapless 0.9.4",
  "static_cell",
  "trouble-host-macros",
  "zerocopy",

@@ -27,7 +27,7 @@ cc-abp2 = { path = "crates/abp2" }
 cc-oled = { path = "crates/oled" }
 cc-blescale = { path = "crates/blescale" }
 
-heapless = "=0.9.3"
+heapless = "=0.9.4"
 libm = "=0.2.16"
 embedded-hal = "=1.0.0"
 embedded-graphics = "=0.8.2"
